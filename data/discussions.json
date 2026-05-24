@@ -1,0 +1,17 @@
+{
+  "counts": {
+    "posts": 1,
+    "pro": 0,
+    "con": 0,
+    "neutral": 1
+  },
+  "items": [
+    {
+      "label": "neutral",
+      "title": "AVVD.AI — публічне обговорення ідеї",
+      "body": "Початковий стартовий пост у GitHub Discussions. Учасникам пропонується оцінити ядро, MVP, ризики та диференціацію.",
+      "source": "General",
+      "url": "https://github.com/peacocksinua-ui/avvd-ai-community-review/discussions/2"
+    }
+  ]
+}
