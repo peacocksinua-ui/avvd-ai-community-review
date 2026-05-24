@@ -1,0 +1,38 @@
+name: Sync Discussions to JSON
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '*/15 * * * *'
+
+permissions:
+  contents: write
+  discussions: read
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run sync script
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO_OWNER: peacocksinua-ui
+          REPO_NAME: avvd-ai-community-review
+          DISCUSSION_NUMBER: 2
+        run: node scripts/sync-discussions.js
+
+      - name: Commit updated JSON
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/discussions.json
+          git diff --cached --quiet || git commit -m "chore: sync discussions data"
+          git push
