@@ -7,7 +7,7 @@ on:
 
 concurrency:
   group: sync-discussions-main
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 permissions:
   contents: write
@@ -44,7 +44,7 @@ jobs:
           git commit -m "chore: sync discussions data" || exit 0
 
           for i in 1 2 3; do
-            git pull --rebase origin main && git push --force-with-lease origin main && exit 0
+            git pull --rebase origin main && git push origin main && exit 0
             echo "Push failed on attempt $i, retrying in 2 seconds..."
             sleep 2
           done
