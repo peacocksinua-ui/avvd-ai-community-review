@@ -75,7 +75,18 @@ async function main() {
   const discussion = json.data.repository.discussion;
   const comments = discussion.comments.nodes || [];
 
-  const items = comments.map((c, idx) => ({
+  const starterItem = {
+    id: `discussion-${DISCUSSION_NUMBER}`,
+    label: classify(discussion.body),
+    title: discussion.title,
+    body: trimText(discussion.body),
+    author: discussion.author?.login || 'unknown',
+    source: 'GitHub Discussions',
+    createdAt: discussion.createdAt,
+    url: discussion.url
+  };
+
+  const commentItems = comments.map((c, idx) => ({
     id: c.id,
     label: classify(c.body),
     title: `Коментар #${idx + 1}`,
@@ -85,6 +96,8 @@ async function main() {
     createdAt: c.createdAt,
     url: c.url
   }));
+
+  const items = [starterItem, ...commentItems];
 
   const counts = {
     posts: items.length,
