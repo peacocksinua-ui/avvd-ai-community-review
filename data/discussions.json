@@ -1,17 +1,16 @@
 {
+  "meta": {
+    "repo": "peacocksinua-ui/avvd-ai-community-review",
+    "discussionNumber": 2,
+    "discussionTitle": "AVVD.AI — публічне обговорення ідеї",
+    "discussionUrl": "https://github.com/peacocksinua-ui/avvd-ai-community-review/discussions/2",
+    "updatedAt": "2026-05-24T20:28:33.941Z"
+  },
   "counts": {
-    "posts": 1,
+    "posts": 0,
     "pro": 0,
     "con": 0,
-    "neutral": 1
+    "neutral": 0
   },
-  "items": [
-    {
-      "label": "neutral",
-      "title": "AVVD.AI — публічне обговорення ідеї",
-      "body": "Початковий стартовий пост у GitHub Discussions. Учасникам пропонується оцінити ядро, MVP, ризики та диференціацію.",
-      "source": "General",
-      "url": "https://github.com/peacocksinua-ui/avvd-ai-community-review/discussions/2"
-    }
-  ]
+  "items": []
 }
