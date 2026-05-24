@@ -7,7 +7,7 @@ on:
 
 concurrency:
   group: sync-discussions-main
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 permissions:
   contents: write
@@ -41,23 +41,27 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add .
-          git commit -m "chore: sync discussions data" || exit 0
-
-          # Спочатку завжди робимо pull перед push
-          git fetch origin main
-          git rebase origin/main || git rebase --abort
           
-          for i in 1 2 3; do
+          # Check if there are changes to commit
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: sync discussions data"
+          fi
+          
+          # Retry push with rebase up to 5 times
+          for i in 1 2 3 4 5; do
+            git fetch origin main
+            git rebase origin/main || { git rebase --abort; true; }
+            
             if git push origin main; then
-              echo "✓ Зміни успішно залиштовані"
+              echo "✓ Successfully pushed changes"
               exit 0
             fi
-            echo "Спроба $i невдала, чекаємо 2 секунди..."
-            sleep 2
-            git fetch origin main
-            git rebase origin/main || git rebase --abort
+            
+            if [ $i -lt 5 ]; then
+              echo "Push attempt $i failed, retrying in 1 second..."
+              sleep 1
+            fi
           done
-
-          echo "✗ Помилка: не вдалось залиштовати зміни після 3 спроб"
-          exit 1
+          
+          echo "✗ Error: Failed to push changes after 5 attempts"
           exit 1
