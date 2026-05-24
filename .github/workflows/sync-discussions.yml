@@ -17,9 +17,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          persist-credentials: false
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -36,3 +33,4 @@ jobs:
         with:
           name: discussions-json
           path: data/discussions.json
+          if-no-files-found: error
