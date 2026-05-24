@@ -43,11 +43,21 @@ jobs:
           git add .
           git commit -m "chore: sync discussions data" || exit 0
 
+          # Спочатку завжди робимо pull перед push
+          git fetch origin main
+          git rebase origin/main || git rebase --abort
+          
           for i in 1 2 3; do
-            git pull --rebase origin main && git push origin main && exit 0
-            echo "Push failed on attempt $i, retrying in 2 seconds..."
+            if git push origin main; then
+              echo "✓ Зміни успішно залиштовані"
+              exit 0
+            fi
+            echo "Спроба $i невдала, чекаємо 2 секунди..."
             sleep 2
+            git fetch origin main
+            git rebase origin/main || git rebase --abort
           done
 
-          echo "Failed to push changes after 3 attempts"
+          echo "✗ Помилка: не вдалось залиштовати зміни після 3 спроб"
+          exit 1
           exit 1
