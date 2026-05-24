@@ -40,5 +40,6 @@ jobs:
             exit 0
           fi
           git commit -m "chore: sync discussions data"
-          git pull --rebase origin main
-          git push origin main
+          git fetch origin main
+          git rebase origin/main
+          git push --force-with-lease origin HEAD:main
