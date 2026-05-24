@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="uk" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Зважування проєкту · громадський розбір</title>
+<link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&f[]=clash-display@600,700&display=swap" rel="stylesheet">
+<style>
+  :root,[data-theme="light"]{
+    --bg:#f7f6f2;--surf:#fbfbf9;--surf2:#f3f0ec;--border:#d4d1ca;--text:#28251d;--muted:#6a6863;--faint:#a9a6a0;--inv:#f9f8f4;
+    --pro:#437a22;--pro-soft:#e6efdd;--con:#a8412a;--con-soft:#f3e2dc;--primary:#01696f;--primary-h:#0c4e54;--warn:#964219;
+    --shadow:0 4px 12px rgba(40,33,20,.08),0 12px 32px rgba(40,33,20,.06);
+    --r:.6rem;--font:'Satoshi',Inter,system-ui,sans-serif;--disp:'Clash Display','Satoshi',sans-serif;
+  }
+  [data-theme="dark"]{
+    --bg:#171614;--surf:#1c1b19;--surf2:#221f1c;--border:#393836;--text:#cdccca;--muted:#9c9b98;--faint:#6b6966;--inv:#1d1c1a;
+    --pro:#6daa45;--pro-soft:#22301a;--con:#d9694f;--con-soft:#33211c;--primary:#4f98a3;--primary-h:#69b3bd;--warn:#bb653b;
+    --shadow:0 4px 12px rgba(0,0,0,.3),0 12px 32px rgba(0,0,0,.35);
+  }
+  *,*::before,*::after{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;
+    background-image:radial-gradient(rgba(127,127,127,.05) 1px,transparent 1px);background-size:5px 5px}
+  .wrap{max-width:1120px;margin:0 auto;padding:26px 20px 90px}
+  h1,h2,h3{margin:0;line-height:1.12;font-family:var(--disp);font-weight:700}
+  button,input,textarea,select{font:inherit;color:inherit}
+  .eyebrow{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--con);font-weight:700;font-family:var(--font)}
+  .topbar{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;margin-bottom:6px}
+  .thesis{font-family:var(--disp);font-size:clamp(24px,4vw,38px);font-weight:700;margin:6px 0 4px;letter-spacing:-.01em}
+  [contenteditable]:focus{outline:2px dashed var(--primary);outline-offset:4px;border-radius:6px}
+  .desc{color:var(--muted);max-width:75ch}
+  .desc[contenteditable]:focus{color:var(--text)}
+  .editline{font-size:12px;color:var(--muted);margin-top:6px}
+  .editline b{color:var(--primary);cursor:pointer}
+  .tbtn{background:var(--surf2);border:1px solid var(--border);border-radius:999px;padding:7px 13px;font-size:13px;cursor:pointer}
+
+  .panel{background:linear-gradient(180deg,var(--surf),var(--surf2));border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow)}
+  .pad{padding:20px}
+  .scale{margin:20px 0}
+  .verdict{font-family:var(--disp);font-size:clamp(19px,2.6vw,27px);font-weight:700}
+  .verdict small{display:block;font-family:var(--font);font-weight:400;font-size:14px;color:var(--muted);margin-top:5px;max-width:70ch}
+  .bar{height:28px;border-radius:999px;overflow:hidden;display:flex;margin:16px 0 7px;border:1px solid var(--border);background:var(--bg)}
+  .bar .p{background:var(--pro);transition:width .6s cubic-bezier(.2,.8,.2,1)}
+  .bar .n{background:var(--con);transition:width .6s cubic-bezier(.2,.8,.2,1)}
+  .barlbl{display:flex;justify-content:space-between;font-size:13px;color:var(--muted)}
+  .stats{display:flex;gap:22px;flex-wrap:wrap;margin-top:15px}
+  .stat b{font-family:var(--disp);font-size:22px;display:block;line-height:1}
+  .stat span{font-size:12.5px;color:var(--muted)}
+  .stat .vp{color:var(--pro)} .stat .vn{color:var(--con)}
+
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:6px}
+  @media(max-width:780px){.cols{grid-template-columns:1fr}}
+  .col h2{font-size:18px;display:flex;align-items:center;gap:8px;margin-bottom:12px;padding-bottom:9px;border-bottom:1px solid var(--border)}
+  .dot{width:11px;height:11px;border-radius:50%}
+  .dot.p{background:var(--pro)} .dot.n{background:var(--con)}
+  .arg{background:var(--surf2);border:1px solid var(--border);border-radius:10px;padding:12px 13px;margin-bottom:10px}
+  .arg.pro{border-left:3px solid var(--pro)} .arg.con{border-left:3px solid var(--con)}
+  .arg .who{font-size:12px;color:var(--muted);display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:5px}
+  .arg .txt{font-size:15.5px}
+  .vote{border:1px solid var(--border);background:var(--bg);border-radius:999px;padding:3px 11px;font-size:12.5px;cursor:pointer;white-space:nowrap;display:inline-flex;gap:5px;align-items:center;transition:.15s}
+  .vote:hover{background:var(--text);color:var(--bg)}
+  .vote.voted{background:var(--pro);color:#fff;border-color:var(--pro);cursor:default}
+  .empty{color:var(--faint);font-style:italic;font-size:14px;padding:6px 0}
+
+  .form{margin-top:18px}
+  .form h2{font-size:19px;margin-bottom:13px}
+  .stancepick{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:11px}
+  .stancepick label{flex:1;min-width:130px;border:1px solid var(--border);border-radius:9px;padding:10px;background:var(--bg);cursor:pointer;text-align:center;font-size:14.5px;user-select:none;transition:.15s}
+  .stancepick input{display:none}
+  .stancepick label:has(input[value=pro]:checked){border-color:var(--pro);background:var(--pro-soft)}
+  .stancepick label:has(input[value=con]:checked){border-color:var(--con);background:var(--con-soft)}
+  .stancepick label:has(input[value=neutral]:checked){border-color:var(--primary);background:color-mix(in oklab,var(--primary) 14%,transparent)}
+  input[type=text],textarea{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:9px;padding:11px 12px;margin-bottom:11px}
+  textarea{min-height:90px;resize:vertical}
+  .btn{font-family:var(--font);font-weight:700;font-size:15px;background:var(--primary);color:#fff;border:none;border-radius:9px;padding:11px 20px;cursor:pointer;transition:.15s}
+  .btn:hover{background:var(--primary-h)}
+  .btn:disabled{opacity:.55;cursor:wait}
+  .btn.ghost{background:transparent;color:var(--text);border:1px solid var(--border)}
+
+  .analysis{margin-top:18px}
+  .ahead{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:6px}
+  .analysis h2{font-size:20px}
+  .ameta{font-size:13px;color:var(--muted);margin-bottom:13px}
+  .abody{font-size:15.5px;line-height:1.62;white-space:pre-wrap}
+  .abody h3{font-family:var(--disp);font-size:16px;margin:15px 0 3px;color:var(--primary)}
+  .warn{font-size:13px;color:var(--warn);margin-top:9px}
+
+  details{background:var(--surf2);border:1px solid var(--border);border-radius:12px;padding:15px 18px;margin-top:14px}
+  summary{cursor:pointer;font-family:var(--disp);font-weight:600;font-size:17px}
+  .badge{display:inline-block;font-size:11px;font-weight:700;padding:3px 8px;border-radius:999px;background:var(--con-soft);color:var(--con);margin-left:8px;font-family:var(--font);letter-spacing:.04em}
+  .frame{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:14px}
+  @media(max-width:780px){.frame{grid-template-columns:1fr 1fr}}
+  .stage{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px}
+  .stage .n{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+  .stage h3{font-size:14px;margin:4px 0;font-family:var(--font);font-weight:700}
+  .stage p{font-size:12.5px;color:var(--muted);margin:0}
+  .qgroup{margin-top:14px}
+  .qgroup h4{font-family:var(--font);font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:0 0 6px}
+  .qgroup ul{margin:0 0 12px;padding-left:18px}
+  .qgroup li{margin:4px 0;font-size:14.5px}
+  .copytmpl{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:9px;padding:12px;min-height:230px;font-family:ui-monospace,monospace;font-size:13px;line-height:1.5;color:var(--text);margin-top:12px}
+  .foot{margin-top:34px;border-top:1px solid var(--border);padding-top:13px;font-size:12px;color:var(--faint);text-align:center}
+  .spin{display:inline-block;width:13px;height:13px;border:2px solid #fff;border-top-color:transparent;border-radius:50%;animation:s .7s linear infinite;vertical-align:-1px}
+  @keyframes s{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <div>
+      <div class="eyebrow">Громадське зважування проєкту</div>
+      <h1 class="thesis" id="thesis" contenteditable="true" spellcheck="false">Чи варто спільноті разом будувати AVVD.AI: універсального агентного помічника (голос, зір, дії), зібраного з готових API, де проєкти учасників стають skills?</h1>
+    </div>
+    <button class="tbtn" id="theme">Світла / темна</button>
+  </div>
+  <div class="desc" id="desc" contenteditable="true" spellcheck="false">AVVD.AI це спільнотний проєкт: універсальний агентний помічник, що бачить, чує і діє, у стилі Jarvis, Mariner та Astra. Збирається не з нуля, а як композиція готових API: дії через Computer Use, голос і зір через Realtime, планування через agent loop, памʼять через векторну базу. Готові проєкти учасників стають skills. Управління без єдиного боса за моделлю Рада плюс Експедитори, код source-available на спільному GitHub, дохід через спільний пул.</div>
+  <div class="editline">Заповнили тезу й опис? <b id="savemeta">зберегти для всіх</b></div>
+
+  <!-- SCALE -->
+  <div class="panel pad scale">
+    <div class="verdict" id="verdict">Поки що немає аргументів<small id="verdictsub">Додайте перші аргументи нижче, і терези почнуть рахуватися.</small></div>
+    <div class="bar"><div class="p" id="barp" style="width:50%"></div><div class="n" id="barn" style="width:50%"></div></div>
+    <div class="barlbl"><span id="lblp">За — 0</span><span id="lbln">0 — Проти</span></div>
+    <div class="stats">
+      <div class="stat"><b class="vp" id="cpro">0</b><span>аргументів за</span></div>
+      <div class="stat"><b class="vn" id="ccon">0</b><span>аргументів проти</span></div>
+      <div class="stat"><b id="cneu">0</b><span>нейтральних</span></div>
+      <div class="stat"><b id="cvotes">0</b><span>голосів за вагомість</span></div>
+    </div>
+  </div>
+
+  <!-- ARGUMENTS -->
+  <div class="cols">
+    <div class="col panel pad">
+      <h2><span class="dot p"></span>На користь проєкту</h2>
+      <div id="prolist"><div class="empty">Ще немає аргументів за.</div></div>
+    </div>
+    <div class="col panel pad">
+      <h2><span class="dot n"></span>Проти та ризики</h2>
+      <div id="conlist"><div class="empty">Ще немає аргументів проти.</div></div>
+    </div>
+  </div>
+
+  <!-- FORM -->
+  <div class="panel pad form">
+    <h2>Додати свою думку</h2>
+    <input type="text" id="name" placeholder="Імʼя або нік (необовʼязково)">
+    <div class="stancepick">
+      <label><input type="radio" name="stance" value="pro">👍 За проєкт</label>
+      <label><input type="radio" name="stance" value="con">👎 Проти / ризик</label>
+      <label><input type="radio" name="stance" value="neutral">🤔 Нейтрально / питання</label>
+    </div>
+    <textarea id="text" placeholder="Аргумент коротко й по суті: що саме спрацює або де слабке місце. Нейтральні питання теж корисні."></textarea>
+    <button class="btn" id="submit">Надіслати аргумент</button>
+  </div>
+
+  <!-- ANALYSIS -->
+  <div class="panel pad analysis">
+    <div class="ahead"><h2>Незалежний зважений аналіз</h2><button class="btn ghost" id="analyze">Оновити аналіз</button></div>
+    <div class="ameta" id="ameta">Аналіз ще не згенеровано.</div>
+    <div class="abody" id="abody">Коли назбирається кілька аргументів, натисніть «Оновити аналіз». Він неупереджено зважує обидві сторони за суттю аргументів і голосами, а не лише за їхньою кількістю, і показує, куди хиляться терези.</div>
+    <div class="warn" id="awarn" style="display:none"></div>
+  </div>
+
+  <!-- SKEPTIC TOOLKIT -->
+  <details>
+    <summary>Лінза адвоката диявола <span class="badge">свідомо однобока</span></summary>
+    <p class="desc" style="margin-top:10px">Цей блок навмисно атакує ідею, щоб витягти слабкі місця. Це не вердикт, а провокатори для дискусії. Вердикт дає зважений аналіз вище.</p>
+    <div class="frame">
+      <div class="stage"><div class="n">Крок 1</div><h3>Розкласти обіцянку</h3><p>Що продукт обіцяє і які припущення вшиті в обіцянку.</p></div>
+      <div class="stage"><div class="n">Крок 2</div><h3>Зламати архітектуру</h3><p>Failure modes, вузькі місця, залежність від інструмента, затримки.</p></div>
+      <div class="stage"><div class="n">Крок 3</div><h3>Зламати економіку</h3><p>Чи сходяться витрати часу, людей і ресурсів проти користі.</p></div>
+      <div class="stage"><div class="n">Крок 4</div><h3>Зламати довіру</h3><p>Де учасник або користувач перестане вірити результату.</p></div>
+      <div class="stage"><div class="n">Крок 5</div><h3>Зламати наратив</h3><p>Що в ідеї суперечить саме собі: аудиторія, мета, спосіб подачі.</p></div>
+    </div>
+    <div id="questions"></div>
+  </details>
+
+
+  <div class="foot">Дані спільні для всіх, хто відкрив посилання. Картина оновлюється автоматично. Голос за аргумент один на сесію.</div>
+</div>
+
+<script>
+const K_ARGS='pdb_args_v1',K_TH='pdb_thesis_v1',K_DESC='pdb_desc_v1',K_AN='pdb_analysis_v1',SH=true;
+let args=[]; let voted=new Set();
+const SEED=[
+  {id:'seed_p1',name:'Lodbrok Ragnar',stance:'pro',votes:0,at:'2026-05-24T08:00:00Z',text:'Будуємо не з нуля, а як композицію готових API: дії через Computer Use, голос і зір через Realtime, планування через agent loop. Це різко скорочує обсяг роботи і ризик.'},
+  {id:'seed_p2',name:'Lodbrok Ragnar',stance:'pro',votes:0,at:'2026-05-24T08:01:00Z',text:'У спільноти вже є готові проєкти, які одразу стають skills: PromptCad плюс HBPL, Ultimate SEO GEO, Recuite, n8n HR-скринінг, трекери новин. Тобто перша хвиля контенту готова, а не пустий старт.'},
+  {id:'seed_p3',name:'Lodbrok Ragnar',stance:'pro',votes:0,at:'2026-05-24T08:02:00Z',text:'Source-available ліцензія плюс спільна GitHub Organization дають контроль і незалежність від чужої закритої платформи. Кожен може форкнути, але комерційні права у групи.'},
+  {id:'seed_p4',name:'Lodbrok Ragnar',stance:'pro',votes:0,at:'2026-05-24T08:03:00Z',text:'Модель Рада плюс Експедитори з ротацією драйвера тижня і трекером внесків дозволяє рухатися швидко без єдиного боса.'},
+  {id:'seed_v1',name:'Volodymyr Sp.',stance:'con',votes:0,at:'2026-05-20T13:01:00Z',text:'Не подобається цей ШІ-slop про те, що могло би бути, як це монетизувати і скільки тижнів триватиме розробка. Такі простині варто генерити, коли вже є спільне бачення. Спершу треба нормально скласти докупи початкові вимоги, потреби і архітектурний промпт.'},
+  {id:'seed_v2',name:'Volodymyr Sp.',stance:'con',votes:0,at:'2026-05-20T13:02:00Z',text:'Не все варто пихати в марвелівського JARVIS. Не все потребує голосового вводу чи озвучення, не все потребує такої графіки чи спецефектів. Обсяг треба свідомо звузити.'},
+  {id:'seed_v3',name:'Volodymyr Sp.',stance:'con',votes:0,at:'2026-05-20T13:33:00Z',text:'Майже все може Claude Code з браузерним плагіном. Багатьом пунктам бракує нейромережі, яку ми цим чатом не зробимо і мусимо чекати на Google, OpenAI тощо. Потрібна конкретика і рух задача за задачею.'},
+  {id:'seed_v4',name:'Volodymyr Sp.',stance:'neutral',votes:0,at:'2026-05-20T13:34:00Z',text:'Щоб робити спільно, потрібне місце, куди збирати інформацію. За кілька ітерацій скласти перелік задач, інтерфейси взаємодії і потрібні компоненти (нейромережі, LLM, алгоритми, API, MCP, акаунти, сховища), потім де це взяти, і лише коли стабілізовано, переходити далі. Я склав публічну таблицю для збору ідей.'},
+  {id:'seed_n1',name:'',stance:'neutral',votes:0,at:'2026-05-24T08:05:00Z',text:'Який перелік функцій і skills увійде в першу версію? Це одне з ключових питань для обговорення.'},
+  {id:'seed_n2',name:'',stance:'neutral',votes:0,at:'2026-05-24T08:06:00Z',text:'Що має бути безкоштовним, а що комерційним? Модель монетизації поки відкрита.'},
+  {id:'seed_n3',name:'',stance:'neutral',votes:0,at:'2026-05-24T08:07:00Z',text:'Як рахувати економіку проєкту? Вартість на користувача сильно залежить від того, які функції увійдуть і що буде платним, тож це варто прорахувати, а не вгадувати.'},
+  {id:'seed_n4',name:'',stance:'neutral',votes:0,at:'2026-05-24T08:08:00Z',text:'Який мінімальний робочий шматок покажемо найближчим часом, щоб перевірити ідею на практиці, а не лише в теорії?'}
+];
+const $=id=>document.getElementById(id);
+const esc=s=>(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+async function sget(k){try{const r=await window.storage.get(k,SH);return r?r.value:null}catch(e){return null}}
+async function sset(k,v){try{await window.storage.set(k,v,SH)}catch(e){console.error(e)}}
+
+/* ---- theme ---- */
+$('theme').onclick=()=>{const r=document.documentElement;r.setAttribute('data-theme',r.getAttribute('data-theme')==='dark'?'light':'dark')};
+
+/* ---- load ---- */
+async function loadAll(){
+  const a=await sget(K_ARGS); args=a?JSON.parse(a):[];
+  if(!a && SEED.length){ args=SEED.slice(); await sset(K_ARGS,JSON.stringify(args)); }
+  const t=await sget(K_TH); if(t)$('thesis').textContent=t;
+  const d=await sget(K_DESC); if(d)$('desc').textContent=d;
+  const an=await sget(K_AN); if(an){const o=JSON.parse(an);renderAnalysis(o.text,o.at,o.count)}
+  render(); genQuestions();
+}
+function weight(a){return 1+(a.votes||0)}
+
+function render(){
+  const pro=args.filter(a=>a.stance==='pro'),con=args.filter(a=>a.stance==='con'),neu=args.filter(a=>a.stance==='neutral');
+  $('cpro').textContent=pro.length;$('ccon').textContent=con.length;$('cneu').textContent=neu.length;
+  $('cvotes').textContent=args.reduce((s,a)=>s+(a.votes||0),0);
+  const wp=pro.reduce((s,a)=>s+weight(a),0),wn=con.reduce((s,a)=>s+weight(a),0),tot=wp+wn;
+  const pp=tot?Math.round(wp/tot*100):50;
+  $('barp').style.width=pp+'%';$('barn').style.width=(100-pp)+'%';
+  $('lblp').textContent='За — '+wp;$('lbln').textContent=wn+' — Проти';
+  let v='Терези приблизно врівноважені',s='Аргументи обох сторін поки рівносильні. Потрібно більше доказів.';
+  if(tot===0){v='Поки що немає аргументів';s='Додайте перші аргументи нижче, і терези почнуть рахуватися.';}
+  else if(pp>=66){v='Терези схиляються: проєкт варто реалізувати';s='Зважено за суттю й голосами, сторона за переважає.';}
+  else if(pp>=55){v='Легкий нахил на користь проєкту';s='Перевага є, але аргументи проти теж вагомі.';}
+  else if(pp<=34){v='Терези схиляються: проєкт під сумнівом';s='Сторона проти наразі переконливіша.';}
+  else if(pp<=45){v='Легкий нахил проти проєкту';s='Ризики поки переважують вигоди.';}
+  $('verdict').innerHTML=esc(v)+'<small>'+esc(s)+'</small>';
+  renderCol('prolist',pro,'pro','Ще немає аргументів за.');
+  renderCol('conlist',con,'con','Ще немає аргументів проти.');
+}
+function renderCol(id,list,cls,empty){
+  const el=$(id);
+  if(!list.length){el.innerHTML='<div class="empty">'+empty+'</div>';return;}
+  list.sort((a,b)=>(b.votes||0)-(a.votes||0));
+  el.innerHTML=list.map(a=>{const v=voted.has(a.id);
+    return `<div class="arg ${cls}"><div class="who"><span>${esc(a.name||'Анонім')}</span>
+      <button class="vote ${v?'voted':''}" ${v?'disabled':''} data-id="${a.id}">▲ <b>${a.votes||0}</b>${v?' враховано':' підтримати'}</button></div>
+      <div class="txt">${esc(a.text)}</div></div>`}).join('');
+  el.querySelectorAll('.vote:not(.voted)').forEach(b=>b.onclick=()=>upvote(b.dataset.id));
+}
+async function upvote(id){
+  if(voted.has(id))return; voted.add(id);
+  const raw=await sget(K_ARGS);const cur=raw?JSON.parse(raw):args;
+  const a=cur.find(x=>x.id===id); if(a)a.votes=(a.votes||0)+1;
+  args=cur; await sset(K_ARGS,JSON.stringify(cur)); render();
+}
+async function submit(){
+  const name=$('name').value.trim();
+  const stance=(document.querySelector('input[name=stance]:checked')||{}).value;
+  const text=$('text').value.trim();
+  if(!stance){alert('Оберіть позицію.');return;}
+  if(text.length<4){alert('Напишіть аргумент.');return;}
+  const item={id:Date.now()+'_'+Math.random().toString(36).slice(2,7),name,stance,text,votes:0,at:new Date().toISOString()};
+  const raw=await sget(K_ARGS);const cur=raw?JSON.parse(raw):[];
+  cur.push(item);args=cur;await sset(K_ARGS,JSON.stringify(cur));
+  $('text').value='';render();$('text').placeholder='Дякуємо. Можете додати ще один аргумент.';
+}
+
+/* ---- analysis (balanced, via API) ---- */
+function renderAnalysis(text,at,count){
+  $('ameta').textContent='Оновлено: '+(at?new Date(at).toLocaleString('uk-UA'):'—')+' · на основі '+(count||0)+' аргументів';
+  $('abody').innerHTML=esc(text).replace(/^###?\s*(.+)$/gm,'<h3>$1</h3>').replace(/\*\*(.+?)\*\*/g,'<b>$1</b>');
+}
+async function analyze(){
+  if(args.length===0){alert('Спочатку додайте кілька аргументів.');return;}
+  const btn=$('analyze');btn.disabled=true;const old=btn.textContent;btn.innerHTML='<span class="spin"></span> Аналізую…';
+  $('awarn').style.display='none';
+  const thesis=$('thesis').textContent.trim(),desc=$('desc').textContent.trim();
+  const list=args.map(a=>`[${a.stance==='pro'?'ЗА':a.stance==='con'?'ПРОТИ':'НЕЙТР'}, голосів ${a.votes||0}] ${a.text}`).join('\n');
+  const prompt=`Ти неупереджений аналітик, який зважує ідею IT-проєкту.\nТеза: "${thesis}".\nОпис проєкту: ${desc}\n\nАргументи учасників спільноти з позицією і голосами підтримки (голоси показують, наскільки спільнота вважає аргумент вагомим):\n${list}\n\nЗроби стислий неупереджений аналіз українською, живою природною мовою, без русизмів, короткими реченнями, без довгих тире. Структура з підзаголовками:\n### Найсильніше за\n### Найсильніше проти\n### Чесна оцінка контраргументів\n(де заперечення справді серйозні, а де на них уже є відповідь)\n### Куди хиляться терези\n(виважений висновок: радше варто, радше ні, чи поки нерозвʼязано, і чому. Зважай на суть аргументів, а не лише на кількість.)\nБудь лаконічним і конкретним.`;
+  try{
+    const res=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,messages:[{role:"user",content:prompt}]})});
+    if(!res.ok)throw new Error('HTTP '+res.status);
+    const data=await res.json();
+    const text=(data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('\n').trim();
+    if(!text)throw new Error('порожня відповідь');
+    const at=new Date().toISOString();
+    renderAnalysis(text,at,args.length);
+    await sset(K_AN,JSON.stringify({text,at,count:args.length}));
+  }catch(e){
+    $('awarn').style.display='block';
+    $('awarn').textContent='ШІ-синтез тут недоступний ('+e.message+'). Терези і підрахунки вище працюють завжди. Згенерувати висновок може власник застосунку, і він збережеться для всіх.';
+  }finally{btn.disabled=false;btn.textContent=old;}
+}
+
+/* ---- devil's advocate question generator (from project description) ---- */
+function tokenize(t){return (t||'').toLowerCase().split(/[^\p{L}\p{N}]+/u).filter(Boolean)}
+function hasAny(t,w){const k=tokenize(t);return w.some(x=>k.includes(x))}
+function genQuestions(){
+  const corpus=$('thesis').textContent+' '+$('desc').textContent;
+  const q={
+    'Технічна правдоподібність':[
+      'Яка одна залежність робить проєкт неробочим, якщо вона відмовить?',
+      'Де накопичується найбільше складності, і чи можна її прибрати?',
+      'Що зламається першим під реальним навантаженням, а не в демо?'
+    ],
+    'Люди та виконання':[
+      'Хто реально робитиме роботу, коли спаде перший ентузіазм?',
+      'Скільки кваліфікованих годин на тиждень це потребує насправді?',
+      'Що буде, якщо ключові учасники вийдуть на середині?'
+    ],
+    'Цінність і сенс':[
+      'Яку конкретну проблему це розвʼязує, і кому вона болить щотижня?',
+      'Чим це краще за те, що вже існує або робиться вручну?',
+      'Що доведеться викинути, щоб зробити найменшу робочу версію швидко?'
+    ],
+    'Скептики мають рацію в чому':[
+      'Який з аргументів проти найважче спростувати чесно?',
+      'Яке твердження прихильників найкрасивіше, але найменш доведене?'
+    ]
+  };
+  if(hasAny(corpus,['опенсорс','open','source','інструмент','tool','бібліотек','library']))
+    q['Технічна правдоподібність'].push('Чи дозволяє ліцензія інструмента саме таке нестандартне використання?');
+  if(hasAny(corpus,['ші','ai','llm','модел','агент','agent']))
+    q['Технічна правдоподібність'].push('Чи відрізняє система відсутність знань від упевненої галюцинації?');
+  if(hasAny(corpus,['спільнот','community','волонт','учасник']))
+    q['Люди та виконання'].push('Як підтримати мотивацію спільноти без оплати в довгу?');
+  $('questions').innerHTML=Object.entries(q).map(([g,items])=>`<div class="qgroup"><h4>${esc(g)}</h4><ul>${items.map(i=>`<li>${esc(i)}</li>`).join('')}</ul></div>`).join('');
+}
+
+$('submit').onclick=submit;
+$('analyze').onclick=analyze;
+$('savemeta').onclick=async()=>{await sset(K_TH,$('thesis').textContent.trim());await sset(K_DESC,$('desc').textContent.trim());genQuestions();$('savemeta').textContent='збережено ✓';setTimeout(()=>$('savemeta').textContent='зберегти для всіх',1600);};
+$('thesis').addEventListener('blur',genQuestions);
+$('desc').addEventListener('blur',genQuestions);
+
+loadAll();
+setInterval(loadAll,8000);
+</script>
+</body>
+</html>
